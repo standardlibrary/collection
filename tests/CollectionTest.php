@@ -155,4 +155,17 @@ final class CollectionTest extends TestCase
         $this->assertNotEquals($a, $b);
         $this->assertEquals(array_flip($data), $b->toArray());
     }
+
+    /**
+     * Arrays
+     *
+     * @return array
+     */
+    final public function arrays(): array
+    {
+        return [
+            'Numeric' => range(0, 100),
+            'String' => range('a','z'),
+        ];
+    }
 }

@@ -98,7 +98,7 @@ interface ArrayFunctions
      *
      * @return static
      */
-    public function flip(): Collection;
+    public function flip();
 
     /**
      * Flattens the set
