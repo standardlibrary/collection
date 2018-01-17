@@ -65,7 +65,7 @@ class Collection extends ImmutableArrayTypeObject implements
     /**
      * Create a new Collection from an array
      *
-     * @param array - OPTIONAL array to import
+     * @param array $data - OPTIONAL array to import
      * @return static
      */
     final public function __construct(array $data = [])
@@ -333,6 +333,27 @@ class Collection extends ImmutableArrayTypeObject implements
 
         // return the Collection for method-chaining
         return $this;
+    }
+
+    /**
+     * Serialize
+     *
+     * @return string
+     */
+    final public function serialize()
+    {
+        return serialize($this->data);
+    }
+
+    /**
+     * unserialize
+     *
+     * @param string $data
+     * @return void
+     */
+    final public function unserialize($data)
+    {
+        $this->data = unserialize($data);
     }
 
     /**
