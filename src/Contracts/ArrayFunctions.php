@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @copyright Simon Deeley 2017
  */
 
-namespace StandardLibrary\Contracts\Type;
+namespace StandardLibrary\Contracts;
 
 /**
  * Array functions
