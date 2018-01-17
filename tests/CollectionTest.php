@@ -31,7 +31,7 @@ final class CollectionTest extends TestCase
     {
         $collection = new Collection($data);
 
-        $this->assertInstanceOf(Collection, $collection);
+        $this->assertInstanceOf(Collection::class, $collection);
         $this->assertEquals($collection->toArray(), $data);
     }
 
@@ -62,7 +62,7 @@ final class CollectionTest extends TestCase
     {
         $collection = new Collection($data);
         $collection->rewind();
-        
+
         while ($collection->valid()) {
 
             $this->assertEquals($collection->peek(), (null || $data[$collection->key()]));

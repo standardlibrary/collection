@@ -122,7 +122,7 @@ class Collection extends ImmutableArrayTypeObject implements
      */
     final public function peek()
     {
-        return $this->getCachedIterator->hasNext()
+        return $this->getCachedIterator()->hasNext()
 
             // Get the inner iterator which is always one step ahead of the CachedIterator
             ? $this->getCachedIterator()->getInnerIterator()->current()
