@@ -68,7 +68,7 @@ class Collection extends ImmutableArrayTypeObject implements
      */
     final public function __construct(array $data = [])
     {
-        $this->data = SplFixedArray::fromArray($data);
+        $this->data = SplFixedArray::fromArray($data, false);
 
         // Save memory
         unset($data);
@@ -272,7 +272,7 @@ class Collection extends ImmutableArrayTypeObject implements
         foreach ($this as $key => $value) {
 
             // Apply the user-defined callback to the current key/pair
-            $data[$key] = $function($key, $pair);
+            $data[$key] = $function($key, $value);
         }
 
         // Create and return a new Collection from the mapped results

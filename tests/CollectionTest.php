@@ -31,7 +31,7 @@ final class CollectionTest extends TestCase
     {
         $collection = new Collection($data);
 
-        $this->assertInstanceOf($collection, Collection);
+        $this->assertInstanceOf(Collection, $collection);
         $this->assertEquals($collection->toArray(), $data);
     }
 
@@ -61,7 +61,8 @@ final class CollectionTest extends TestCase
     final public function testLookAheadInLoop(array $data): void
     {
         $collection = new Collection($data);
-
+        $collection->rewind();
+        
         while ($collection->valid()) {
 
             $this->assertEquals($collection->peek(), (null || $data[$collection->key()]));
