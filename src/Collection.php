@@ -12,7 +12,6 @@ namespace StandardLibrary;
 
 use CachingIterator;
 use Countable;
-use Iterator;
 use IteratorAggregate;
 use RecursiveArrayIterator;
 use RecursiveIteratorIterator;
@@ -32,7 +31,6 @@ use InvalidArgumentException;
 class Collection extends ImmutableArrayTypeObject implements
     ArrayFunctions,
     Countable,
-    Iterator,
     IteratorAggregate,
     Serializable,
     Sortable
