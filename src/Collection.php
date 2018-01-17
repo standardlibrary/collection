@@ -19,7 +19,7 @@ use RecursiveIteratorIterator;
 use Serializable;
 use SplFixedArray;
 use Traversable;
-use StandardLibrary\ImmutableArrayObject;
+use StandardLibrary\ImmutableArrayTypeObject;
 use StandardLibrary\Contracts\ArrayFunctions;
 use StandardLibrary\Contracts\Sortable;
 use InvalidArgumentException;
@@ -29,7 +29,7 @@ use InvalidArgumentException;
  *
  * @author Simon Deeley <simondeeley@users.noreply.github.com>
  */
-class Collection extends ImmutableArrayObject implements
+class Collection extends ImmutableArrayTypeObject implements
     ArrayFunctions,
     Countable,
     Iterator,
