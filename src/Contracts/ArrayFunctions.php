@@ -111,7 +111,7 @@ interface ArrayFunctions
      *
      * @return void
      */
-    public function flatten(): void;
+    public function flatten();
 
     /**
      * Strip keys from arrays

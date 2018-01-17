@@ -164,8 +164,8 @@ final class CollectionTest extends TestCase
     final public function arrays(): array
     {
         return [
-            'Numeric' => range(0, 100),
-            'String' => range('a','z'),
+            'Numeric' => [range(0, 100)],
+            'String' => [range('a','z')],
         ];
     }
 }
