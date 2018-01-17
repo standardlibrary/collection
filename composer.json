@@ -19,7 +19,8 @@
     "docs": "https://github.com/standardlibrary/collection/blob/master/README.md"
   },
   "require": {
-    "php": "~7.1"
+    "php": "~7.1",
+    "standardlibrary/type": "~1.0"
   },
   "autoload": {
     "psr-4": {
