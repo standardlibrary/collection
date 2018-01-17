@@ -75,6 +75,28 @@ class Collection extends ImmutableArrayTypeObject implements
     }
 
     /**
+     * Check that a key exists
+     *
+     * @param mixed $key
+     * @return bool
+     */
+    final public function offsetExists($key)
+    {
+        return $this->data->offsetExists($key);
+    }
+
+    /**
+     * Return value
+     *
+     * @param mixed $key
+     * @return mixed
+     */
+    final public function offsetGet($key)
+    {
+        return ($this->offsetExists($key)) ? $this->data[$key] : null;
+    }
+
+    /**
      * Counts the items in the set
      *
      * @return int
@@ -280,6 +302,28 @@ class Collection extends ImmutableArrayTypeObject implements
         $flattened = new RecursiveIteratorIterator(new RecursiveArrayIterator($this));
 
         return new static(iterator_to_array($flattened, false));
+    }
+
+    /**
+     * Strip keys from arrays
+     *
+     * @param bool $recursive - OPTIONALLY strip keys from multidimensional arrays
+     * @return void
+     */
+    public function stripKeys(bool $recursive = false): void
+    {
+        // ...
+    }
+
+    /**
+     * Merge one or more sets into the current set
+     *
+     * @param mixed ...$sets - One or more sets to merge
+     * @return static - Single, merged set
+     */
+    public function merge(...$sets): Collection
+    {
+        // ...
     }
 
     /**
