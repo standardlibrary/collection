@@ -77,11 +77,11 @@ final class CollectionArrayAccessTest extends TestCase
       * @dataProvider deleteData
       * @final
       * @param array $data
-      * @param mixed $value
       * @param mixed $offset
+      * @param mixed $value
       * @return void
       */
-      final public function testDeletesValueFromCollection(array $data, $value, $offset): void
+      final public function testDeletesValueFromCollection(array $data, $offset, $value): void
       {
           $collection = new Collection($data);
           $collection->delete($offset);
