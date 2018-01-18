@@ -46,9 +46,10 @@ final class CollectionCountTest extends TestCase
     final public function countData(): array
     {
         return [
-            'Tiny array' => [ range(0,1), 1 ],
+            'Empty Array' => [ [], 0 ],
+            'Tiny array' => [ range(0,1), 2 ],
             'Normal array' => [ range('a', 'z'), 26 ],
-            'Large array' => [ range(0, 1000000), 1000000],
+            'Large array' => [ range(0, 1000000), 1000001],
         ];
     }
 }
