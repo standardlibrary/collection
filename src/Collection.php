@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace StandardLibrary;
 
 use ArrayAccess;
+use ArrayIterator;
 use CachingIterator;
 use Countable;
 use IteratorAggregate;
@@ -83,7 +84,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
     {
         $this[$offset] = $value;
 
-        return self;
+        return $this;
     }
 
     /**
@@ -362,7 +363,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
         return $this->iterator = new CachingIterator(
 
             // The raw data
-            $this->data,
+            new ArrayIterator($this->data),
 
             // Always use original data and force all items to be cached on read
             CachingIterator::TOSTRING_USE_CURRENT | CachingIterator::FULL_CACHE
