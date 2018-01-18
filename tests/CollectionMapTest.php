@@ -100,20 +100,22 @@ final class CollectionMapTest extends TestCase
      {
          return [
              'Simple multiplication' => [
-                 [1, 2, 3, 4, 5],
+                 [1, 2, 3, 4, 5], // Start data
 
+                 // Modifying function
                  function(int $value, array $args) {
                      return $value * $args['multiplier'];
                  },
 
-                 [ 'multiplier' => 5 ],
+                 [ 'multiplier' => 5 ], // Array of arguments
 
-                 [5, 10, 15, 20, 25],
+                 [5, 10, 15, 20, 25], // expected
              ],
 
              'String manipulation' => [
-                 [1, 2, 3, 'foo', 'bar', 4],
+                 [1, 2, 3, 'foo', 'bar', 4], // Start data
 
+                 // Modyfing function
                  function($value, array $args) {
                      if (is_object($value)) {
                          $value = $args[0];
@@ -122,9 +124,9 @@ final class CollectionMapTest extends TestCase
                      return $value;
                  },
 
-                 [ 'FOOBAR' ],
+                 [ 'FOOBAR' ], // Array of arguments
 
-                 [1, 2, 3, 'FOOBAR', 'FOOBAR', 4],
+                 [1, 2, 3, 'FOOBAR', 'FOOBAR', 4], // expected
              ]
          ];
      }
