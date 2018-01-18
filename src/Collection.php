@@ -127,7 +127,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
     {
         unset($this[$offset]);
 
-        return self;
+        return $this;
     }
 
     /**

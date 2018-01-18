@@ -31,7 +31,7 @@ final class CollectionArrayAccessTest extends TestCase
     final public function testSetsValuesOnCollection($offset, $value): void
     {
         $collection = new Collection();
-        $collection->add($offset, $value);
+        $collection->set($offset, $value);
 
         $this->assertArrayHasKey($offset, $collection->toArray());
         $this->assertContains($value, $collection);
