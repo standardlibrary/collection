@@ -10,33 +10,24 @@ declare(strict_types=1);
 
 namespace StandardLibrary;
 
+use ArrayAccess;
 use CachingIterator;
 use Countable;
 use IteratorAggregate;
-use RecursiveArrayIterator;
-use RecursiveIteratorIterator;
 use Serializable;
-use SplFixedArray;
 use Traversable;
-use StandardLibrary\ImmutableArrayTypeObject;
-use StandardLibrary\Contracts\ArrayFunctions;
-use StandardLibrary\Contracts\Sortable;
-use InvalidArgumentException;
+use StandardLibrary\Contracts\TypeEquality;
+use StandardLibrary\Contracts\Type\CollectionType;
 
 /**
  * Collection
  *
  * @author Simon Deeley <simondeeley@users.noreply.github.com>
  */
-class Collection extends ImmutableArrayTypeObject implements
-    ArrayFunctions,
-    Countable,
-    IteratorAggregate,
-    Serializable,
-    Sortable
+class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggregate, Serializable
 {
     /**
-     * @var SplFixedArray
+     * @var array
      */
     protected $data;
 
@@ -68,32 +59,120 @@ class Collection extends ImmutableArrayTypeObject implements
      */
     final public function __construct(array $data = [])
     {
-        $this->data = SplFixedArray::fromArray($data, false);
-
-        // Save memory
-        unset($data);
+        $this->data = $data;
     }
 
     /**
-     * Check that a key exists
+     * Return collection as a PHP native array
      *
-     * @param mixed $key
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return $this->data;
+    }
+
+    /**
+     * Sets a key/pair value
+     *
+     * @param mixed $offset - the key (offset) to insert at
+     * @param mixed $value - the value (data) to insert
+     * @return self - SHOULD return same object to allow method-chaining
+     */
+    public function set($offset, $value): self
+    {
+        $this[$offset] = $value;
+
+        return self;
+    }
+
+    /**
+     * Get a value
+     *
+     * @param mixed $offset - the offset to return
+     * @param mixed $default - OPTIONAL value to use as a default
+     * @return mixed
+     */
+    public function get($offset, $default = null)
+    {
+        return $this->has($offset) ? $this[$offset] : $default;
+    }
+
+    /**
+     * Check that an offset exists
+     *
+     * Checks that a given offset exists. Method MUST return boolean TRUE if the
+     * offset exists or FALSE otherwise.
+     *
+     * @param mixed $offset - the offset to check
      * @return bool
      */
-    final public function offsetExists($key)
+    public function has($offset): bool
     {
-        return $this->data->offsetExists($key);
+        return isset($this[$offset]);
+    }
+
+    /**
+     * Deletes a key/pair
+     *
+     * It is RECOMMENED that this method checks the existence of the key before
+     * trying to delete it. It MAY thrown an exception if the key does not
+     * exists or it MAY ignore the error but it SHOULD always return the same
+     * instance of itself to allow method chaining.
+     *
+     * @param mixed $offset
+     * @return self
+     */
+    public function delete($offset)
+    {
+        unset($this[$offset]);
+
+        return self;
+    }
+
+    /**
+     * Set offset
+     *
+     * @param mixed $offset
+     * @param mixed $value
+     * @return void
+     */
+     final public function offsetSet($offset, $value): void
+     {
+         $this->data[$offset] = $value;
+     }
+
+     /**
+      * Unset offset
+      *
+      * @param mixed $offset
+      * @return void
+      */
+     final public function offsetUnset($offset): void
+     {
+         unset($this->data[$offset]);
+     }
+
+    /**
+     * Check that a offset exists
+     *
+     * @param mixed $offset
+     * @return bool
+     */
+    final public function offsetExists($offset)
+    {
+        return array_key_exists($offset, $this->data);
     }
 
     /**
      * Return value
      *
-     * @param mixed $key
+     * @param mixed $offset
      * @return mixed
      */
-    final public function offsetGet($key)
+    final public function offsetGet($offset)
     {
-        return ($this->offsetExists($key)) ? $this->data[$key] : null;
+        return ($this->offsetExists($offset)) ? $this->data[$offset] : null;
     }
 
     /**
@@ -182,152 +261,57 @@ class Collection extends ImmutableArrayTypeObject implements
     }
 
     /**
-     * Return the Collection as a PHP array
+     * Apply a callback to every element of the collection
      *
-     * @return array
+     * This method applies the suplied $function callable to each item of the
+     * collection. The callable MAY modify the items but it MUST return a value.
+     * The method SHOULD return the same instance to allow method-chaining.
+     *
+     * @param callable $function - the user-defined function to apply
+     * @param array $args - OPTIONAL array of arguments to pass to the callable
+     * @return self
      */
-    final public function toArray(): array
+    final public function map(callable $function, array $args = []): self
     {
-        return $this->data->toArray();
+        iterator_apply(
+
+            // Use $this object as the iterator
+            $this,
+
+            // Wrap callable in closure that alway returns true
+            function(CollectionType $collection) use ($function, $args) {
+
+                // Set current key to result of callable
+                $collection->set(
+
+                    // Current key
+                    $collection->key(),
+
+                    // User-defined callable
+                    $function(
+
+                        // Current value
+                        $collection->current(),
+
+                        // Optional user-defined arguments
+                        $args
+                    )
+                );
+
+                return true;
+            },
+
+            // Pass $this (again) to the function for reasons unbeknown to science
+            // {@see https://www.reddit.com/r/lolphp/comments/5zkn29/what_the_hell_with_iterator_apply/}
+            [$this]
+        );
+
+        // Return to allow method-chaining
+        return $this;
     }
 
     /**
-     * Append a new item
-     *
-     * @param mixed $data
-     * @return static
-     */
-    final public function append($item): Collection
-    {
-        // Get raw data
-        $data = $this->toArray();
-
-        // Add item to the end
-        $data[] = $item;
-
-        // Create and return new Collection
-        return new static($data);
-    }
-
-    /**
-     * Prepend an item to the front of the Collection
-     *
-     * @param mixed $item
-     * @return static
-     */
-    final public function prepend($item): Collection
-    {
-        // Get raw data
-        $data = $this->toArray();
-
-        // Push new item to the front of the array
-        array_unshift($data, $item);
-
-        // Create and return new Collection
-        return new static($data);
-    }
-
-    /**
-     * Filter the collection
-     *
-     * Takes a callback and sends each key/value pair to it. If the return value
-     * is true then the key/pair are pushed to a newly created Collection.
-     *
-     * @param callable $function
-     * @return static
-     */
-    final public function filter(callable $function): Collection
-    {
-        // Start with an empty array
-        $data = [];
-
-        // Loop through the data
-        foreach ($this as $key => $value) {
-
-            // If the callback returns true, push the item to the new array
-            if ($function($key, $value) === true) {
-                $data[$key] = $value;
-            }
-        }
-
-        // Create and return a new Collection from the filtered results
-        return new static($data);
-    }
-
-    /**
-     * Map each value of the set
-     *
-     * Takes each key/value pair and applies a callback function to them. The
-     * returned value from the function is used to create a modified set which
-     * is then returned.
-     *
-     * @param callable $function
-     * @return static
-     */
-    final public function map(callable $function): Collection
-    {
-        // Start with an empty array
-        $data = [];
-
-        foreach ($this as $key => $value) {
-
-            // Apply the user-defined callback to the current key/pair
-            $data[$key] = $function($key, $value);
-        }
-
-        // Create and return a new Collection from the mapped results
-        return new static($data);
-    }
-
-    /**
-     * Flips the key/value pairs
-     *
-     * @return static
-     */
-    final public function flip(): Collection
-    {
-        return new static(array_flip($this->toArray()));
-    }
-
-    /**
-     * Flatten the collection
-     *
-     * Recursively merges multi-dimensional arrays into one flat array. Array keys
-     * are not preserved.
-     *
-     * @return static
-     */
-    final public function flatten(): Collection
-    {
-        $flattened = new RecursiveIteratorIterator(new RecursiveArrayIterator($this));
-
-        return new static(iterator_to_array($flattened, false));
-    }
-
-    /**
-     * Strip keys from arrays
-     *
-     * @param bool $recursive - OPTIONALLY strip keys from multidimensional arrays
-     * @return void
-     */
-    public function stripKeys(bool $recursive = false): void
-    {
-        // ...
-    }
-
-    /**
-     * Merge one or more sets into the current set
-     *
-     * @param mixed ...$sets - One or more sets to merge
-     * @return static - Single, merged set
-     */
-    public function merge(...$sets): Collection
-    {
-        // ...
-    }
-
-    /**
-     * Return an interator
+     * Return an iterator
      *
      * @return Traversable
      */
@@ -339,42 +323,6 @@ class Collection extends ImmutableArrayTypeObject implements
             // Send the current key/value pair
             yield $key => $value;
         }
-    }
-
-    /**
-     * Sorts the current collection
-     *
-     * @return static
-     * @throws InvalidArgumentException - thrown when an invalid sort order is used
-     */
-    final public function sort(int $order = SORT_ASC, int $flags = SORT_REGULAR): self
-    {
-        // Get raw data to work with
-        $data = $this->toArray();
-
-        if ($order & SORT_ASC) {
-
-            // Sort ascending
-            asort($data, $flags);
-
-        } elseif ($order & SORT_DESC) {
-
-            // Sort descending
-            arsort($data, $flags);
-
-        } else {
-
-            // Invalid sort order
-            throw new InvalidArgumentException(
-                'The sort order provided must be SORT_ASC or SORT_DESC'
-            );
-        }
-
-        // Swap internal data for newly sorted data
-        $this->swap($data);
-
-        // return the Collection for method-chaining
-        return $this;
     }
 
     /**
@@ -419,22 +367,5 @@ class Collection extends ImmutableArrayTypeObject implements
             // Always use original data and force all items to be cached on read
             CachingIterator::TOSTRING_USE_CURRENT | CachingIterator::FULL_CACHE
         );
-    }
-
-    /**
-     * Swap out the internal data
-     *
-     * @param array $data
-     * @return void
-     */
-    final private function swap(array $data): void
-    {
-        $this->data = SplFixedArray::fromArray($data);
-
-        // Clear cached iterator
-        unset($this->iterator);
-
-        // Memory clearing
-        unset($data);
     }
 }

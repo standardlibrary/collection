@@ -17,156 +17,178 @@ use StandardLibrary\Collection;
  * @author Simon Deeley <simondeeley@users.noreply.github.com>
  * @uses StandardLibrary\Collection
  */
-final class CollectionTest extends TestCase
+final class CollectionArrayAccessTest extends TestCase
 {
     /**
-     * Test we can create a new Collection from an array
+     * Test correctly sets values on a Collection
      *
-     * @dataProvider arrays
+     * @dataProvider setData
      * @final
-     * @param array $data
+     * @param mixed $offset
+     * @param mixed $value
      * @return void
      */
-    final public function testCreateCollectionFromArray(array $data): void
+    final public function testSetsValuesOnCollection($offset, $value): void
     {
-        $collection = new Collection($data);
+        $collection = new Collection();
+        $collection->add($offset, $value);
 
-        $this->assertInstanceOf(Collection::class, $collection);
-        $this->assertEquals($collection->toArray(), $data);
+        $this->assertArrayHasKey($offset, $collection->toArray());
+        $this->assertContains($value, $collection);
     }
 
     /**
-     * Test Collection counts elements
+     * Test correctly gets a value from a Collection
      *
-     * @dataProvider arrays
+     * @dataProvider getData
      * @final
      * @param array $data
+     * @param mixed $offset
+     * @param mixed $expected
      * @return void
      */
-    final public function testCountElements(array $data): void
+    final public function testGetsValueFromCollection(array $data, $offset, $expected): void
     {
         $collection = new Collection($data);
 
-        $this->assertCount($collection->count(), $data);
+        $this->assertEquals($expected, $collection->get($offset));
     }
 
     /**
-     * Test peeks ahead to next element
+     * Test correctly checks an offset exists
      *
-     * @dataProvider arrays
+     * @dataProvider hasData
      * @final
      * @param array $data
+     * @param mixed $offset
+     * @param mixed $expected
      * @return void
      */
-    final public function testLookAheadInLoop(array $data): void
-    {
-        $collection = new Collection($data);
-        $collection->rewind();
+     final public function testHasValueInCollection(array $data, $offset, $expected): void
+     {
+         $collection = new Collection($data);
 
-        while ($collection->valid()) {
+         $this->assertEquals($expected, $collection->has($offset));
+     }
 
-            $this->assertEquals($collection->peek(), (null || $data[$collection->key()]));
+     /**
+      * Test correctly deletes an offset
+      *
+      * @dataProvider deleteData
+      * @final
+      * @param array $data
+      * @param mixed $value
+      * @param mixed $offset
+      * @return void
+      */
+      final public function testDeletesValueFromCollection(array $data, $value, $offset): void
+      {
+          $collection = new Collection($data);
+          $collection->delete($offset);
 
-            $collection->next();
+          $this->assertArrayNotHasKey($offset, $collection->toArray());
+          $this->assertNotContains($value, $collection);
+      }
+
+      /**
+       * Data for testSetsValuesOnCollection
+       *
+       * @return array
+       */
+       final public function setData(): array
+       {
+           return [
+               [1, 2],
+               ['foo', 'bar'],
+               [10, 'baz'],
+               ['foo', true],
+               [0, null],
+           ];
+       }
+
+       /**
+        * Data for testGetsValueFromCollection
+        *
+        * @return array
+        */
+        final public function getData(): array
+        {
+            return [
+                [
+                    [1, 2, 3, 4, 5],
+                    2,
+                    3,
+                ],
+
+                [
+                    ['a', 'b', 'c'],
+                    0,
+                    'a',
+                ],
+
+                [
+                    [ 1 => 'foo', 'bar' => 'baz', true ],
+                    1,
+                    'foo',
+                ]
+            ];
         }
-    }
 
-    /**
-     * Test appends element
-     *
-     * @dataProvider arrays
-     * @final
-     * @param array $data
-     * @return void
-     */
-    final public function testAppendsElement(array $data): void
-    {
-        $a = new Collection($data);
-        $b = $a->append('foo');
+        /**
+         * Data for testHasValueInCollection
+         *
+         * @return array
+         */
+        final public function hasData(): array
+        {
+            return [
+                [
+                    [1, 2, 3, 4, 5],
+                    2,
+                    true
+                ],
 
-        $this->assertNotEquals($a, $b);
-        $this->assertEquals('foo', end($b));
-    }
+                [
+                    ['a', 'b', 'c'],
+                    10,
+                    false,
+                ],
 
-    /**
-     * Test prepends element
-     *
-     * @dataProvider arrays
-     * @final
-     * @param array $data
-     * @return void
-     */
-    final public function testPrependsElement(array $data): void
-    {
-        $a = new Collection($data);
-        $b = $a->prepend('foo');
-
-        $this->assertNotEquals($a, $b);
-        $this->assertEquals(reset($b), 'foo');
-    }
-
-    /**
-     * Test filters array
-     *
-     * @final
-     * @return void
-     */
-    final public function testFiltersCollection(): void
-    {
-        $a = new Collection([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-        $b = $a->filter(function($item) {
-            return $item % 2 === 1 ? true : false;
-        });
-
-        $this->assertNotEquals($a, $b);
-        $this->assertCount(5, $b);
-    }
-
-    /**
-     * Test maps array
-     *
-     * @final
-     * @return void
-     */
-    final public function testMapsCollection(): void
-    {
-        $a = new Collection([1, 2, 3, 4, 5]);
-        $b = $a->map(function($item) {
-            return 'foo';
-        });
-
-        foreach ($b as $item) {
-            $this->assertEquals('foo', $item);
+                [
+                    [ 1 => 'foo', 'bar' => 'baz', true ],
+                    'bar',
+                    true
+                ]
+            ];
         }
-    }
 
-    /**
-     * Test flips arrays
-     *
-     * @dataProvider arrays
-     * @final
-     * @param array $data
-     * @return void
-     */
-    final public function testFlipsKeyValuePairs(array $data): void
-    {
-        $a = new Collection($data);
-        $b = $a->flip();
+        /**
+         * Data for testDeletesValueFromCollection
+         *
+         * @return array
+         */
+         final public function deleteData(): array
+         {
+             return [
+                 [
+                     [1, 2, 3, 4, 5],
+                     2,
+                     3,
+                 ],
 
-        $this->assertNotEquals($a, $b);
-        $this->assertEquals(array_flip($data), $b->toArray());
-    }
+                 [
+                     ['a', 'b', 'c'],
+                     0,
+                     'a',
+                 ],
 
-    /**
-     * Arrays
-     *
-     * @return array
-     */
-    final public function arrays(): array
-    {
-        return [
-            'Numeric' => [range(0, 100)],
-            'String' => [range('a','z')],
-        ];
-    }
+                 [
+                     [ 1 => 'foo', 'bar' => 'baz', true ],
+                     1,
+                     'foo',
+                 ]
+             ];
+         }
+
+
 }
