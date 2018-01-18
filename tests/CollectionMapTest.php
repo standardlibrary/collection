@@ -79,7 +79,7 @@ final class CollectionMapTest extends TestCase
                 [1, 2, 3, 'foo', 'bar', 4],
 
                 function($value) {
-                    if (is_object($value)) {
+                    if (is_string($value)) {
                         $value = 'changed!';
                     }
 
@@ -117,7 +117,7 @@ final class CollectionMapTest extends TestCase
 
                  // Modyfing function
                  function($value, array $args) {
-                     if (is_object($value)) {
+                     if (is_string($value)) {
                          $value = $args[0];
                      }
 
