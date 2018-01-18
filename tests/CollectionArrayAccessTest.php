@@ -183,7 +183,7 @@ final class CollectionArrayAccessTest extends TestCase
                  ],
 
                  [
-                     [ 1 => 'foo', 'bar' => 'baz', true ],
+                     [ 1 => 'foo', 'bar' => 'baz' ],
                      1,
                      'foo',
                  ]
