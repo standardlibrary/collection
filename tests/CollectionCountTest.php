@@ -48,7 +48,7 @@ final class CollectionCountTest extends TestCase
         return [
             'Tiny array' => [ range(0,1), 1 ],
             'Normal array' => [ range('a', 'z'), 26 ],
-            'Large array' => [ range(0, 10000000), 10000000],
+            'Large array' => [ range(0, 1000000), 1000000],
         ];
     }
 }
