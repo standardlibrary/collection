@@ -17,7 +17,7 @@ use StandardLibrary\Collection;
  * @author Simon Deeley <simondeeley@users.noreply.github.com>
  * @uses StandardLibrary\Collection
  */
-final class CollectionMapTest extends TestCase
+final class CollectionApplyTest extends TestCase
 {
     /**
      * Test that a callable function can applied to each element of a

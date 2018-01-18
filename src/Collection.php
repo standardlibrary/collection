@@ -272,7 +272,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      * @param array $args - OPTIONAL array of arguments to pass to the callable
      * @return self
      */
-    final public function map(callable $function, array $args = []): self
+    final public function apply(callable $function, array $args = []): self
     {
         iterator_apply(
 
@@ -298,6 +298,42 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
                         $args
                     )
                 );
+
+                return true;
+            },
+
+            // Pass $this (again) to the function for reasons unbeknown to science
+            // {@see https://www.reddit.com/r/lolphp/comments/5zkn29/what_the_hell_with_iterator_apply/}
+            [$this]
+        );
+
+        // Return to allow method-chaining
+        return $this;
+    }
+
+    /**
+     * Filter the current collection by a user-defined function
+     *
+     * @param callable $function - the user-defined function to filter by
+     * @param array $args - OPTIONAL array of arguments to pass to the callable
+     * @return self
+     */
+    public function filter(callable $function, array $args = []): self
+    {
+        iterator_apply(
+
+            // Use $this object as the iterator
+            $this,
+
+            // Wrap callable in closure that alway returns true
+            function(CollectionType $collection) use ($function, $args) {
+
+                // Pass current element and optional arguments to callable
+                if ($function($collection->current(), $args) === false) {
+
+                    // If user-defined callable returns false, delete the element
+                    $collection->delete($collection->key());
+                }
 
                 return true;
             },

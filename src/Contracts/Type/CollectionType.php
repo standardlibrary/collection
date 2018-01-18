@@ -97,4 +97,19 @@ interface CollectionType extends Type
      * @return self
      */
     public function apply(callable $function, array $args = []);
+
+    /**
+     * Filter the current collection by a user-defined function
+     *
+     * The callable function MUST accept at least one parameter and MAY accept
+     * an array of OPTIONAL parameters that will be passed to the function. The
+     * callable MUST return boolean TRUE or FALSE. A true value will result in
+     * the current element of the array being unmodified whereas a FALSE value
+     * will result in the current element being unset from the Collection.
+     *
+     * @param callable $function - the user-defined function to filter by
+     * @param array $args - OPTIONAL array of arguments to pass to the callable
+     * @return self
+     */
+    public function filter(callable $function, array $args = []);
 }
