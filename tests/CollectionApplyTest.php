@@ -20,28 +20,28 @@ use StandardLibrary\Collection;
 final class CollectionMapTest extends TestCase
 {
     /**
-     * Test that a callable function can be mapped to each element of a
+     * Test that a callable function can applied to each element of a
      * Collection and return the modified result.
      *
-     * @dataProvider mapData
+     * @dataProvider applyData
      * @final
      * @param array $data
      * @param callable $modifier
      * @param array $expected
      * @return void
      */
-    final public function testMapCallableToEachElement(array $data, callable $modifier, array $expected): void
+    final public function testApplyCallableToEachElement(array $data, callable $modifier, array $expected): void
     {
         $collection = new Collection($data);
-        $collection->map($modifier);
+        $collection->apply($modifier);
 
         $this->assertEquals($expected, $collection->toArray());
     }
 
     /**
-     * Test that user can pass variables into map function
+     * Test that user can pass variables into the applied function
      *
-     * @dataProvider mapWithVariablesData
+     * @dataProvider applyWithVariablesData
      * @final
      * @param array $data
      * @param callable $modifier
@@ -49,10 +49,10 @@ final class CollectionMapTest extends TestCase
      * @param array $expected
      * @return void
      */
-    final public function testMapCallableWithVariables(array $data, callable $modifier, array $args, array $expected): void
+    final public function testApplyCallableWithVariables(array $data, callable $modifier, array $args, array $expected): void
     {
         $collection = new Collection($data);
-        $collection->map($modifier, $args);
+        $collection->apply($modifier, $args);
 
         $this->assertEquals($expected, $collection->toArray());
     }
@@ -62,7 +62,7 @@ final class CollectionMapTest extends TestCase
      *
      * @return array
      */
-    final public function mapData(): array
+    final public function applyData(): array
     {
         return [
             'Simple multiplication' => [
@@ -96,7 +96,7 @@ final class CollectionMapTest extends TestCase
      *
      * @return array
      */
-     final public function mapWithVariablesData(): array
+     final public function applyWithVariablesData(): array
      {
          return [
              'Simple multiplication' => [

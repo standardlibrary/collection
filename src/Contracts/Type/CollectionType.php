@@ -34,7 +34,7 @@ interface CollectionType extends Type
      * @return array
      */
     public function toArray(): array;
-    
+
     /**
      * Sets a key/pair value
      *
@@ -96,5 +96,5 @@ interface CollectionType extends Type
      * @param array $args - OPTIONAL array of arguments to pass to the callable
      * @return self
      */
-    public function map(callable $function, array $args = []);
+    public function apply(callable $function, array $args = []);
 }
