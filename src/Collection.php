@@ -103,7 +103,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
                 $collection->set(
 
                     // Current key
-                    $collection->key(),
+                    $collection->getInnerIterator()->key(),
 
                     // User-defined callable
                     $function(
