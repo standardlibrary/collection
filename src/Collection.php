@@ -230,7 +230,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      */
     public function get($offset, $default = null)
     {
-        return $this->has($offset) ? $this[$offset] : $default;
+        return $this->exists($offset) ? $this[$offset] : $default;
     }
 
     /**
@@ -433,6 +433,10 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      */
     final private function findFirstMatchingElement(IteratorAggregate $array, callable $filter = null, $default = null)
     {
+        $filter ?? function($item) {
+            return true;
+        };
+
         iterator_apply(
 
             // Use $array object as the iterator
@@ -444,11 +448,11 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
             function(IteratorAggregate $iterator) use ($filter, &$default) {
 
                 // Pass current element to callable
-                if ($filter($collection->current()) === true) {
+                if ($filter($iterator->current()) === true) {
 
                     // If user-defined callable returns true then grab the
                     // current element and break loop
-                    $default = $collection->current();
+                    $default = $iterator->current();
 
                     return false;
                 }
