@@ -316,8 +316,8 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      */
     final public function offsetExists($offset)
     {
-        return isset($this->data[$offset])
-            || array_key_exists($offset, $this->data);
+        // Supress warning for non-integer or string keys
+        return @array_key_exists($offset, $this->data);
     }
 
     /**
