@@ -72,7 +72,7 @@ final class FirstTest extends TestCase
             'No Matches!',
             self::$collection->first(function($item) {
                 return ($item === 'invalid') ? true : false;
-            }, 'No Matches!')
+            }, [], 'No Matches!')
         );
     }
 }
