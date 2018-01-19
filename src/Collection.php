@@ -126,11 +126,11 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
     /**
      * Filter the current collection by a user-defined function
      *
-     * @param callable $function - the user-defined function to filter by
+     * @param callable $filter - the user-defined function to filter by
      * @param array $args - OPTIONAL array of arguments to pass to the callable
      * @return self
      */
-    final public function filter(callable $function, array $args = []): self
+    final public function filter(callable $filter, array $args = []): self
     {
         // Start a new Collection to collect the filtered results
         $collection = new Collection();
@@ -142,10 +142,10 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
             $this,
 
             // Wrap callable in closure that alway returns true
-            function(IteratorAggregate $iterator) use ($function, $args, &$collection) {
+            function(IteratorAggregate $iterator) use ($filter, $args, &$collection) {
 
                 // Pass current element and optional arguments to callable
-                if ($function($iterator->current(), $args) === true) {
+                if ($filter($iterator->current(), $args) === true) {
 
                     $collection->set(
                         $iterator->key(),
@@ -178,7 +178,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
         // Use $this if no filter provided
         $filtered = ($filter === null)
             ? $this
-            : $this->filter($function, $args)
+            : $this->filter($filter, $args)
         ;
 
         // Return first value or default if filtered collection is empty
@@ -198,7 +198,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
         // Use $this if no filter provided
         $filtered = ($filter === null)
             ? $this
-            : $this->filter($function, $args)
+            : $this->filter($filter, $args)
         ;
 
         // Return last value or default if filtered collection is empty

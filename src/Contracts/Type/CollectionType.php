@@ -107,11 +107,11 @@ interface CollectionType extends Type
      * the current element of the array being added to a new Collection. This
      * new collection Collection MUST be returned, even if it's empty.
      *
-     * @param callable $function - the user-defined function to filter by
+     * @param callable $filter - the user-defined function to filter by
      * @param array $args - OPTIONAL array of arguments to pass to the callable
      * @return static
      */
-    public function filter(callable $function, array $args = []);
+    public function filter(callable $filter, array $args = []);
 
     /**
      * Return first element matching criteria
