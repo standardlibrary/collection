@@ -17,7 +17,7 @@ use StandardLibrary\Collection;
  * @author Simon Deeley <simondeeley@users.noreply.github.com>
  * @uses StandardLibrary\Collection
  */
-final class Get_and_ArrayAccess_OffsetGet_Test extends TestCase
+final class ArrayAccess_OffsetGetTest extends TestCase
 {
     /**
      * Test should get valid offset from a Collection

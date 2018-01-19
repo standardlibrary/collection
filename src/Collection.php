@@ -108,7 +108,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      * @param mixed $offset - the offset to check
      * @return bool
      */
-    public function has($offset): bool
+    public function exists($offset): bool
     {
         return isset($this[$offset]);
     }
@@ -162,7 +162,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      */
     final public function offsetExists($offset)
     {
-        return array_key_exists($offset, $this->data);
+        return isset($this->data[$offset]);
     }
 
     /**
@@ -318,7 +318,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      * @param array $args - OPTIONAL array of arguments to pass to the callable
      * @return self
      */
-    public function filter(callable $function, array $args = []): self
+    final public function filter(callable $function, array $args = []): self
     {
         iterator_apply(
 
