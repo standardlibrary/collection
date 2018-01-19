@@ -122,10 +122,11 @@ interface CollectionType extends Type
      * the array.
      *
      * @param callable|null $filter - user-defined function to filter elements
+     * @param array $args - OPTIONAL array of arguments to pass to the callable
      * @param mixed|null $default - OPTIONAL default value to return
      * @return mixed
      */
-    public function first(callable $filter = null, $default = null);
+    public function first(callable $filter = null, array $args = [], $default = null);
 
     /**
      * Return last element matching criteria
@@ -136,8 +137,9 @@ interface CollectionType extends Type
      * the array.
      *
      * @param callable|null $filter - user-defined function to filter elements
+     * @param array $args - OPTIONAL array of arguments to pass to the callable
      * @param mixed|null $default - OPTIONAL default value to return
      * @return mixed
      */
-    public function last(callable $filter = null, $default = null);
+    public function last(callable $filter = null, array $args = [], $default = null);
 }
