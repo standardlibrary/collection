@@ -499,7 +499,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
         }
 
         // Generate checksum
-        $this->$checksum = md5(serialize($this->data));
+        $this->checksum = md5(serialize($this->data));
 
         // Create and return new CachedIterator from the data
         return $this->iterator = new CachingIterator(
