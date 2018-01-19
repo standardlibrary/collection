@@ -116,7 +116,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
 
             // Pass $this (again) to the function for reasons unbeknown to science
             // {@see https://www.reddit.com/r/lolphp/comments/5zkn29/what_the_hell_with_iterator_apply/}
-            [$this]
+            [$this->toArray()]
         );
 
         // Return to allow method-chaining
@@ -158,7 +158,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
 
             // Pass $this (again) to the function for reasons unbeknown to science
             // {@see https://www.reddit.com/r/lolphp/comments/5zkn29/what_the_hell_with_iterator_apply/}
-            [$this]
+            [$this->toArray()]
         );
 
         // Return filtered Collection
@@ -182,7 +182,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
         ;
 
         // Return first value or default if filtered collection is empty
-        return reset($filtered);
+        return empty($filtered) ? $default : reset($filtered);
     }
 
     /**
