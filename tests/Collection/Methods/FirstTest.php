@@ -73,7 +73,7 @@ final class FirstTest extends TestCase
         $this->assertEquals(
             'No Matches!',
             self::$collection->first(function($item) {
-                return ($item === 'invalid') ? true : false;
+                return ($item === 'invalid');
             }, [], 'No Matches!')
         );
     }
