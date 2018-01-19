@@ -147,7 +147,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
                 // Pass current element and optional arguments to callable
                 if ($function($iterator->current(), $args) === true) {
 
-                    $collection->add(
+                    $collection->set(
                         $iterator->key(),
                         $iterator->current()
                     );
