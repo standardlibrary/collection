@@ -493,13 +493,15 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
     final private function getCachedIterator(): CachingIterator
     {
         // If cache is generated, return it
-        if (isset($this->iterator) && $this->checksum === md5($this->data)) {
+        if (isset($this->iterator)
+            && $this->checksum === md5(serialize($this->data))) {
             return $this->iterator;
         }
 
-        // Create and return new CachedIterator from the data
-        $this->$checksum = md5($this->data);
+        // Generate checksum
+        $this->$checksum = md5(serialize($this->data));
 
+        // Create and return new CachedIterator from the data
         return $this->iterator = new CachingIterator(
 
             // The raw data
