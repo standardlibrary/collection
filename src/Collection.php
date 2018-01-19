@@ -182,7 +182,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
         ;
 
         // Return first value or default if filtered collection is empty
-        return empty($filtered) ? $default : reset($filtered->toArray());
+        return empty($filtered) ? $default : reset($filtered);
     }
 
     /**
@@ -202,7 +202,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
         ;
 
         // Return last value or default if filtered collection is empty
-        return empty($filtered) ? $default : end($filtered->toArray());
+        return empty($filtered) ? $default : end($filtered);
     }
 
     /**

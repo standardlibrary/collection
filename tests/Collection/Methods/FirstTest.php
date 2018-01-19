@@ -43,7 +43,9 @@ final class FirstTest extends TestCase
      */
     final public function testShouldReturnFirstElement(): void
     {
-        $this->assertEquals(1, self::$collection->first());
+        $first = self::$collection->first();
+
+        $this->assertEquals(1, $first);
     }
 
     /**
