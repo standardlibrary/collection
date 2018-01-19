@@ -231,7 +231,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      */
     public function set($offset, $value): self
     {
-        $this[$offset] = $value;
+        $this->offsetSet($offset, $value);
 
         return $this;
     }
