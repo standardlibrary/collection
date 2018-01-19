@@ -193,28 +193,13 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
     }
 
     /**
-     * Flips order of the Collection
-     *
-     * @return self
-     */
-    final public function flip(): self
-    {
-        array_flip($this->data);
-
-        // Reset cache
-        unset($this->iterator);
-
-        return $this;
-    }
-
-    /**
      * Reverse order of the Collection
      *
      * @return self
      */
     final public function reverse(): self
     {
-        array_reverse($this->data);
+        $this->data = array_reverse($this->data);
 
         // Reset cache
         unset($this->iterator);

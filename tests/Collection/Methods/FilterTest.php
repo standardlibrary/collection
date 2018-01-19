@@ -35,7 +35,7 @@ final class FilterTest extends TestCase
         $collection->filter($modifier, $args);
 
         foreach ($expected as $value) {
-            $this->assertNotContains($value, $collection);
+            $this->assertContains($value, $collection);
         }
 
         $this->assertCount(4, $collection->toArray());
