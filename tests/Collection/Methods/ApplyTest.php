@@ -17,7 +17,7 @@ use StandardLibrary\Collection;
  * @author Simon Deeley <simondeeley@users.noreply.github.com>
  * @uses StandardLibrary\Collection
  */
-final class CollectionApplyTest extends TestCase
+final class ApplyTest extends TestCase
 {
     /**
      * Test that a callable function can applied to each element of a
@@ -96,38 +96,38 @@ final class CollectionApplyTest extends TestCase
      *
      * @return array
      */
-     final public function applyWithVariablesData(): array
-     {
-         return [
-             'Simple multiplication' => [
-                 [1, 2, 3, 4, 5], // Start data
+    final public function applyWithVariablesData(): array
+    {
+        return [
+            'Simple multiplication' => [
+                [1, 2, 3, 4, 5], // Start data
 
-                 // Modifying function
-                 function(int $value, array $args) {
-                     return $value * $args['multiplier'];
-                 },
+                // Modifying function
+                function(int $value, array $args) {
+                    return $value * $args['multiplier'];
+                },
 
-                 [ 'multiplier' => 5 ], // Array of arguments
+                [ 'multiplier' => 5 ], // Array of arguments
 
-                 [5, 10, 15, 20, 25], // expected
-             ],
+                [5, 10, 15, 20, 25], // expected
+            ],
 
-             'String manipulation' => [
-                 [1, 2, 3, 'foo', 'bar', 4], // Start data
+            'String manipulation' => [
+                [1, 2, 3, 'foo', 'bar', 4], // Start data
 
-                 // Modyfing function
-                 function($value, array $args) {
-                     if (is_string($value)) {
-                         $value = $args[0];
-                     }
+                // Modyfing function
+                function($value, array $args) {
+                    if (is_string($value)) {
+                        $value = $args[0];
+                    }
 
-                     return $value;
-                 },
+                    return $value;
+                },
 
-                 [ 'FOOBAR' ], // Array of arguments
+                [ 'FOOBAR' ], // Array of arguments
 
-                 [1, 2, 3, 'FOOBAR', 'FOOBAR', 4], // expected
-             ]
-         ];
-     }
- }
+                [1, 2, 3, 'FOOBAR', 'FOOBAR', 4], // expected
+            ]
+        ];
+    }
+}

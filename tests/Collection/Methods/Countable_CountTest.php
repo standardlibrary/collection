@@ -17,7 +17,7 @@ use StandardLibrary\Collection;
  * @author Simon Deeley <simondeeley@users.noreply.github.com>
  * @uses StandardLibrary\Collection
  */
-final class CollectionCountTest extends TestCase
+final class CountableCountTest extends TestCase
 {
     /**
      * Test count method of a Collection
