@@ -245,18 +245,27 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      */
     public function get($offset, $default = null)
     {
-        return $this->exists($offset) ? $this[$offset] : $default;
+        return $this->offsetExists($offset) ? $this->data[$offset] : $default;
     }
 
     /**
-     * Check that an offset exists
+     * Check that an offset, or series of offsets exists
      *
-     * @param mixed $offset - the offset to check
+     * @param mixed $offset - the offset(s) to check
      * @return bool
      */
     public function exists($offset): bool
     {
-        return isset($this[$offset]);
+        $offsets = is_array($offset) ? $offset : func_get_args();
+
+        foreach ($offsets as $key) {
+
+            if (! $this->offsetExists($key)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -279,9 +288,13 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      * @param mixed $value
      * @return void
      */
-     final public function offsetSet($offset, $value): void
-     {
-         $this->data[$offset] = $value;
+    final public function offsetSet($offset, $value): void
+    {
+        if (is_null($key)) {
+            $this->data[] = $value;
+        } else {
+            $this->data[$offset] = $value;
+        }
      }
 
      /**
@@ -303,7 +316,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      */
     final public function offsetExists($offset)
     {
-        return count(array_keys($this->data, $offset, true)) > 0 ? true : false;
+        return array_key_exists($offset, $this->data);
     }
 
     /**
