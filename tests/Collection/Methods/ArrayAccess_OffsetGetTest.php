@@ -132,11 +132,9 @@ final class ArrayAccess_OffsetGetTest extends TestCase
     final public function invalidOffsetsWithDefaultValue(): array
     {
         return [
-            [
-                [1, 'baz', 'baz'],
-                ['bar', true, true],
-                [-1, 100, 100],
-            ]
+            [1, 'baz', 'baz'],
+            ['bar', true, true],
+            [-1, 100, 100],
         ];
     }
 }
