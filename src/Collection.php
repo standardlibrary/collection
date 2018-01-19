@@ -276,7 +276,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      */
     public function delete($offset)
     {
-        unset($this[$offset]);
+        unset($this->data[$offset]);
 
         return $this;
     }

@@ -29,16 +29,16 @@ final class ArrayAccess_OffsetUnsetTest extends TestCase
      */
     final public function testDeletesValueFromCollectionWithKey($offset, $value): void
     {
-      $collection = new Collection([
-          0 => 'foo',
-          1 => 'bar',
-          'baz' => true,
-      ]);
+        $collection = new Collection([
+            0 => 'foo',
+            1 => 'bar',
+            'baz' => true,
+        ]);
 
-      $collection->delete($offset);
+        $collection->delete($offset);
 
-      $this->assertArrayNotHasKey($offset, $collection->toArray());
-      $this->assertNotContains($value, $collection);
+        $this->assertArrayNotHasKey($offset, $collection->toArray());
+        $this->assertNotContains($value, $collection);
     }
 
     /**
