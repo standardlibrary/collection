@@ -43,11 +43,6 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
     protected $iterator;
 
     /**
-     * @var string
-     */
-    protected $checksum;
-
-    /**
      * Returns the type of the object
      *
      * @return string
@@ -103,13 +98,13 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
                 $collection->set(
 
                     // Current key
-                    $collection->getInnerIterator()->key(),
+                    $collection->key(),
 
                     // User-defined callable
                     $function(
 
                         // Current value
-                        $collection->getInnerIterator()->current(),
+                        $collection->current(),
 
                         // Optional user-defined arguments
                         $args
@@ -493,13 +488,9 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
     final private function getCachedIterator(): CachingIterator
     {
         // If cache is generated, return it
-        if (isset($this->iterator)
-            && $this->checksum === md5(serialize($this->data))) {
+        if (isset($this->iterator)) {
             return $this->iterator;
         }
-
-        // Generate checksum
-        $this->checksum = md5(serialize($this->data));
 
         // Create and return new CachedIterator from the data
         return $this->iterator = new CachingIterator(
