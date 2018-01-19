@@ -163,31 +163,66 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      * Return first element matching criteria
      *
      * @param callable|null $filter - user-defined function to filter elements
+     * @param array $args - OPTIONAL array of arguments to pass to the callable
      * @param mixed|null $default - OPTIONAL default value to return
      * @return mixed
      */
-    public function first(callable $filter = null, $default = null)
+    public function first(callable $filter = null, array $args = [], $default = null)
     {
-        return $this->findFirstMatchingElement($this, $filter, $default);
+        // If no filter is provided then use a dummy one
+        $filter = $filter ?? function($item) {
+            return true;
+        };
+
+        iterator_apply(
+
+            // Use $this object as the iterator
+            $this,
+
+            // Wrap callable in closure that and apply filter function.
+            // If filter returns true then match is found so break loop by
+            // returning false into the iterator_apply function.
+            function(IteratorAggregate $iterator) use ($filter, $args, &$default) {
+
+                // Pass current element to callable
+                if ($filter($iterator->current(), $args) === true) {
+
+                    // If user-defined callable returns true then grab the
+                    // current element and break loop
+                    $default = $iterator->current();
+
+                    return false;
+                }
+
+                return true;
+            },
+
+            // Pass $this (again) to the function for reasons unbeknown to science
+            // {@see https://www.reddit.com/r/lolphp/comments/5zkn29/what_the_hell_with_iterator_apply/}
+            [$this]
+        );
+
+        // Return the found (or default) value
+        return $default;
     }
 
     /**
      * Return last element matching criteria
      *
      * @param callable|null $filter - user-defined function to filter elements
+     * @param array $args - OPTIONAL array of arguments to pass to the callable
      * @param mixed|null $default - OPTIONAL default value to return
      * @return mixed
      */
-    public function last(callable $filter = null, $default = null)
+    public function last(callable $filter = null, array $args = [], $default = null)
     {
         // Reverse array first
-        $array = clone $this;
-        $array->reverse();
+        $this->data = array_reverse($this->data,true);
 
-        $element = $this->findFirstMatchingElement($array, $filter, $default);
+        $element = $this->first($filter, $args, $default);
 
-        // Memory saving
-        unset($array);
+        // Switch element back
+        $this->data = array_reverse($this->data,true);
 
         return $element;
     }
@@ -432,52 +467,6 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
     final public function unserialize($data)
     {
         $this->data = unserialize($data);
-    }
-
-    /**
-     * Returns first element in array matching criteria
-     *
-     * @param IteratorAggregate $array
-     * @param callable|null $filter
-     * @param mixed $default
-     * @return mixed
-     */
-    final private function findFirstMatchingElement(IteratorAggregate $array, callable $filter = null, $default = null)
-    {
-        $filter = $filter ?? function($item) {
-            return true;
-        };
-
-        iterator_apply(
-
-            // Use $array object as the iterator
-            $array,
-
-            // Wrap callable in closure that and apply filter function.
-            // If filter returns true then match is found so break loop by
-            // returning false into the iterator_apply function.
-            function(IteratorAggregate $iterator) use ($filter, &$default) {
-
-                // Pass current element to callable
-                if ($filter($iterator->current()) === true) {
-
-                    // If user-defined callable returns true then grab the
-                    // current element and break loop
-                    $default = $iterator->current();
-
-                    return false;
-                }
-
-                return true;
-            },
-
-            // Pass $this (again) to the function for reasons unbeknown to science
-            // {@see https://www.reddit.com/r/lolphp/comments/5zkn29/what_the_hell_with_iterator_apply/}
-            [$array]
-        );
-
-        // Return the found (or default) value
-        return $default;
     }
 
     /**
