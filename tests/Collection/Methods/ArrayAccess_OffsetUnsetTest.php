@@ -35,10 +35,10 @@ final class ArrayAccess_OffsetUnsetTest extends TestCase
             'baz' => true,
         ]);
 
-        $collection->delete($offset);
+        $collection->offsetUnset($offset);
 
         $this->assertArrayNotHasKey($offset, $collection->toArray());
-        $this->assertNotContains($value, $collection->toArray());
+        $this->assertNotContains($value, $collection);
     }
 
     /**

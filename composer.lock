@@ -1,0 +1,72 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "1ea69b287b9ba0ac0cc4ab7314ef4d38",
+    "packages": [
+        {
+            "name": "standardlibrary/type",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/standardlibrary/type.git",
+                "reference": "aca33782849536d6161bf005896fbeb835b2a74d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/standardlibrary/type/zipball/aca33782849536d6161bf005896fbeb835b2a74d",
+                "reference": "aca33782849536d6161bf005896fbeb835b2a74d",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~7.1"
+            },
+            "replace": {
+                "simondeeley/type": "*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "StandardLibrary\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Simon Deeley",
+                    "email": "simondeeley@users.noreply.github.com",
+                    "homepage": "https://github.com/simondeeley",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Building block base classes for PHP objects",
+            "homepage": "https://github.com/standardlibrary",
+            "keywords": [
+                "building-block",
+                "immutable",
+                "php"
+            ],
+            "time": "2017-12-11 14:45:53"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": "~7.1"
+    },
+    "platform-dev": []
+}
