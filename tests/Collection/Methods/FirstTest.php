@@ -69,7 +69,7 @@ final class FirstTest extends TestCase
     final public function testShouldReturnDefaultValueWhenNoMatchesFound(): void
     {
         $this->assertEquals(
-            'No matches!',
+            'No Matches!',
             self::$collection->first(function($item) {
                 return ($item === 'invalid') ? true : false;
             }, 'No Matches!')

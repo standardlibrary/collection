@@ -56,7 +56,7 @@ final class LastTest extends TestCase
         $this->assertEquals(
             4,
             self::$collection->last(function($item) {
-                return is_num($item);
+                return is_int($item);
             })
         );
     }
@@ -69,7 +69,7 @@ final class LastTest extends TestCase
     final public function testShouldReturnDefaultValueWhenNoMatchesFound(): void
     {
         $this->assertEquals(
-            'No matches!',
+            'No Matches!',
             self::$collection->first(function($item) {
                 return ($item === 'invalid') ? true : false;
             }, 'No Matches!')

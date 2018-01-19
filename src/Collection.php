@@ -288,7 +288,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      */
     final public function offsetExists($offset)
     {
-        return isset($this->data[$offset]);
+        return array_key_exists($offset, $this->data);
     }
 
     /**
@@ -433,7 +433,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      */
     final private function findFirstMatchingElement(IteratorAggregate $array, callable $filter = null, $default = null)
     {
-        $filter ?? function($item) {
+        $filter = $filter ?? function($item) {
             return true;
         };
 

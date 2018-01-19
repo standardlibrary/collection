@@ -22,7 +22,7 @@ final class ArrayAccess_OffsetUnsetTest extends TestCase
     /**
      * Test correctly deletes an offset
      *
-     * @final
+     * @dataProvider data
      * @param mixed $offset
      * @param mixed $value
      * @return void
@@ -46,7 +46,7 @@ final class ArrayAccess_OffsetUnsetTest extends TestCase
      *
      * @return array
      */
-    final public function deleteData(): array
+    final public function data(): array
     {
         return [
             [0, 'foo'],
