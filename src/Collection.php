@@ -74,6 +74,140 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
     }
 
     /**
+     * Apply a callback to every element of the collection
+     *
+     * This method applies the suplied $function callable to each item of the
+     * collection. The callable MAY modify the items but it MUST return a value.
+     * The method SHOULD return the same instance to allow method-chaining.
+     *
+     * @param callable $function - the user-defined function to apply
+     * @param array $args - OPTIONAL array of arguments to pass to the callable
+     * @return self
+     */
+    final public function apply(callable $function, array $args = []): self
+    {
+        iterator_apply(
+
+            // Use $this object as the iterator
+            $this,
+
+            // Wrap callable in closure that alway returns true
+            function(CollectionType $collection) use ($function, $args) {
+
+                // Set current key to result of callable
+                $collection->set(
+
+                    // Current key
+                    $collection->key(),
+
+                    // User-defined callable
+                    $function(
+
+                        // Current value
+                        $collection->current(),
+
+                        // Optional user-defined arguments
+                        $args
+                    )
+                );
+
+                return true;
+            },
+
+            // Pass $this (again) to the function for reasons unbeknown to science
+            // {@see https://www.reddit.com/r/lolphp/comments/5zkn29/what_the_hell_with_iterator_apply/}
+            [$this]
+        );
+
+        // Return to allow method-chaining
+        return $this;
+    }
+
+    /**
+     * Filter the current collection by a user-defined function
+     *
+     * @param callable $function - the user-defined function to filter by
+     * @param array $args - OPTIONAL array of arguments to pass to the callable
+     * @return self
+     */
+    final public function filter(callable $function, array $args = []): self
+    {
+        iterator_apply(
+
+            // Use $this object as the iterator
+            $this,
+
+            // Wrap callable in closure that alway returns true
+            function(CollectionType $collection) use ($function, $args) {
+
+                // Pass current element and optional arguments to callable
+                if ($function($collection->current(), $args) === false) {
+
+                    // If user-defined callable returns false, delete the element
+                    $collection->delete($collection->key());
+                }
+
+                return true;
+            },
+
+            // Pass $this (again) to the function for reasons unbeknown to science
+            // {@see https://www.reddit.com/r/lolphp/comments/5zkn29/what_the_hell_with_iterator_apply/}
+            [$this]
+        );
+
+        // Return to allow method-chaining
+        return $this;
+    }
+
+    /**
+     * Return first element matching criteria
+     *
+     * @param callable|null $filter - user-defined function to filter elements
+     * @param mixed|null $default - OPTIONAL default value to return
+     * @return mixed
+     */
+    public function first(callable $filter = null, $default = null)
+    {
+        return $this->findFirstMatchingElement($this, $filter, $default);
+    }
+
+    /**
+     * Return last element matching criteria
+     *
+     * @param callable|null $filter - user-defined function to filter elements
+     * @param mixed|null $default - OPTIONAL default value to return
+     * @return mixed
+     */
+    public function last(callable $filter = null, $default = null)
+    {
+        // Reverse array first
+        $array = clone $this;
+        $array->flip();
+
+        $element = $this->findFirstMatchingElement($this, $filter, $default);
+
+        // Memory saving
+        unset($array);
+
+        return $element;
+    }
+
+    /**
+     * Flips order of the Collection
+     *
+     * @return self
+     */
+    final public function flip(): self
+    {
+        array_flip($this->data);
+
+        // Reset cache
+        unset($this->iterator);
+
+        return $this;
+    }
+
+    /**
      * Sets a key/pair value
      *
      * @param mixed $offset - the key (offset) to insert at
@@ -102,9 +236,6 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
     /**
      * Check that an offset exists
      *
-     * Checks that a given offset exists. Method MUST return boolean TRUE if the
-     * offset exists or FALSE otherwise.
-     *
      * @param mixed $offset - the offset to check
      * @return bool
      */
@@ -115,11 +246,6 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
 
     /**
      * Deletes a key/pair
-     *
-     * It is RECOMMENED that this method checks the existence of the key before
-     * trying to delete it. It MAY thrown an exception if the key does not
-     * exists or it MAY ignore the error but it SHOULD always return the same
-     * instance of itself to allow method chaining.
      *
      * @param mixed $offset
      * @return self
@@ -262,92 +388,6 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
     }
 
     /**
-     * Apply a callback to every element of the collection
-     *
-     * This method applies the suplied $function callable to each item of the
-     * collection. The callable MAY modify the items but it MUST return a value.
-     * The method SHOULD return the same instance to allow method-chaining.
-     *
-     * @param callable $function - the user-defined function to apply
-     * @param array $args - OPTIONAL array of arguments to pass to the callable
-     * @return self
-     */
-    final public function apply(callable $function, array $args = []): self
-    {
-        iterator_apply(
-
-            // Use $this object as the iterator
-            $this,
-
-            // Wrap callable in closure that alway returns true
-            function(CollectionType $collection) use ($function, $args) {
-
-                // Set current key to result of callable
-                $collection->set(
-
-                    // Current key
-                    $collection->key(),
-
-                    // User-defined callable
-                    $function(
-
-                        // Current value
-                        $collection->current(),
-
-                        // Optional user-defined arguments
-                        $args
-                    )
-                );
-
-                return true;
-            },
-
-            // Pass $this (again) to the function for reasons unbeknown to science
-            // {@see https://www.reddit.com/r/lolphp/comments/5zkn29/what_the_hell_with_iterator_apply/}
-            [$this]
-        );
-
-        // Return to allow method-chaining
-        return $this;
-    }
-
-    /**
-     * Filter the current collection by a user-defined function
-     *
-     * @param callable $function - the user-defined function to filter by
-     * @param array $args - OPTIONAL array of arguments to pass to the callable
-     * @return self
-     */
-    final public function filter(callable $function, array $args = []): self
-    {
-        iterator_apply(
-
-            // Use $this object as the iterator
-            $this,
-
-            // Wrap callable in closure that alway returns true
-            function(CollectionType $collection) use ($function, $args) {
-
-                // Pass current element and optional arguments to callable
-                if ($function($collection->current(), $args) === false) {
-
-                    // If user-defined callable returns false, delete the element
-                    $collection->delete($collection->key());
-                }
-
-                return true;
-            },
-
-            // Pass $this (again) to the function for reasons unbeknown to science
-            // {@see https://www.reddit.com/r/lolphp/comments/5zkn29/what_the_hell_with_iterator_apply/}
-            [$this]
-        );
-
-        // Return to allow method-chaining
-        return $this;
-    }
-
-    /**
      * Return an iterator
      *
      * @return Traversable
@@ -381,6 +421,48 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
     final public function unserialize($data)
     {
         $this->data = unserialize($data);
+    }
+
+    /**
+     * Returns first element in array matching criteria
+     *
+     * @param IteratorAggregate $array
+     * @param callable|null $filter
+     * @param mixed $default
+     * @return mixed
+     */
+    final private function findFirstMatchingElement(IteratorAggregate $array, callable $filter = null, $default = null)
+    {
+        iterator_apply(
+
+            // Use $array object as the iterator
+            $array,
+
+            // Wrap callable in closure that and apply filter function.
+            // If filter returns true then match is found so break loop by
+            // returning false into the iterator_apply function.
+            function(IteratorAggregate $iterator) use ($filter, &$default) {
+
+                // Pass current element to callable
+                if ($filter($collection->current()) === true) {
+
+                    // If user-defined callable returns true then grab the
+                    // current element and break loop
+                    $default = $collection->current();
+
+                    return false;
+                }
+
+                return true;
+            },
+
+            // Pass $this (again) to the function for reasons unbeknown to science
+            // {@see https://www.reddit.com/r/lolphp/comments/5zkn29/what_the_hell_with_iterator_apply/}
+            [$array]
+        );
+
+        // Return the found (or default) value
+        return $default;
     }
 
     /**
