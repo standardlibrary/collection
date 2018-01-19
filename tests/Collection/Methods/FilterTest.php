@@ -34,7 +34,11 @@ final class FilterTest extends TestCase
         $collection = new Collection($data);
         $collection->filter($modifier, $args);
 
-        $this->assertSame($expected, $collection->toArray());
+        foreach ($expected as $value) {
+            $this->assertNotContains($value, $collection);
+        }
+
+        $this->assertCount(4, $collection->toArray());
     }
 
     /**
@@ -55,7 +59,7 @@ final class FilterTest extends TestCase
 
                 [ 'divisor' => 2 ], // Array of arguments
 
-                [1, 3, 5, 7], // expected
+                [2, 4, 6, 8], // expected
             ],
         ];
     }
