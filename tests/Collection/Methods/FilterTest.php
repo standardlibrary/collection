@@ -51,7 +51,7 @@ final class FilterTest extends TestCase
 
                 // Modifying function
                 function(int $value, array $args) {
-                    return ($value % $args['divisor'] === 2) ? true : false;
+                    return ($value % $args['divisor'] === 0) ? true : false;
                 },
 
                 [ 'divisor' => 2 ], // Array of arguments
