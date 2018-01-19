@@ -38,7 +38,7 @@ final class ArrayAccess_OffsetUnsetTest extends TestCase
         $collection->delete($offset);
 
         $this->assertArrayNotHasKey($offset, $collection->toArray());
-        $this->assertNotContains($value, $collection);
+        $this->assertNotContains($value, $collection->toArray());
     }
 
     /**
