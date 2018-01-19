@@ -32,10 +32,10 @@ final class FilterTest extends TestCase
     final public function testShouldFilterCollectionUsingCallable(array $data, callable $modifier, array $args, array $expected): void
     {
         $collection = new Collection($data);
-        $collection->filter($modifier, $args);
+        $filtered = $collection->filter($modifier, $args);
 
         foreach ($expected as $value) {
-            $this->assertContains($value, $collection);
+            $this->assertContains($value, $filtered);
         }
 
         $this->assertCount(4, $collection->toArray());

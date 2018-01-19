@@ -132,19 +132,25 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      */
     final public function filter(callable $function, array $args = []): self
     {
+        // Start a new Collection to collect the filtered results
+        $collection = new Collection();
+
+        // Iterate over current Collection
         iterator_apply(
 
             // Use $this object as the iterator
             $this,
 
             // Wrap callable in closure that alway returns true
-            function(CollectionType $collection) use ($function, $args) {
+            function(IteratorAggregate $iterator) use ($function, $args, &$collection) {
 
                 // Pass current element and optional arguments to callable
-                if ($function($collection->current(), $args) === false) {
+                if ($function($iterator->current(), $args) === true) {
 
-                    // If user-defined callable returns false, delete the element
-                    $collection->delete($collection->key());
+                    $collection->add(
+                        $iterator->key(),
+                        $iterator->current()
+                    );
                 }
 
                 return true;
@@ -155,8 +161,8 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
             [$this]
         );
 
-        // Return to allow method-chaining
-        return $this;
+        // Return filtered Collection
+        return $collection;
     }
 
     /**
@@ -169,41 +175,14 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      */
     public function first(callable $filter = null, array $args = [], $default = null)
     {
-        // If no filter is provided then use a dummy one
-        $filter = $filter ?? function($item) {
-            return true;
-        };
+        // Use $this if no filter provided
+        $filtered = ($filter === null)
+            ? $this
+            : $this->filter($function, $args)
+        ;
 
-        iterator_apply(
-
-            // Use $this object as the iterator
-            $this,
-
-            // Wrap callable in closure that and apply filter function.
-            // If filter returns true then match is found so break loop by
-            // returning false into the iterator_apply function.
-            function(IteratorAggregate $iterator) use ($filter, $args, &$default) {
-
-                // Pass current element to callable
-                if ($filter($iterator->current(), $args) === true) {
-
-                    // If user-defined callable returns true then grab the
-                    // current element and break loop
-                    $default = $iterator->current();
-
-                    return false;
-                }
-
-                return true;
-            },
-
-            // Pass $this (again) to the function for reasons unbeknown to science
-            // {@see https://www.reddit.com/r/lolphp/comments/5zkn29/what_the_hell_with_iterator_apply/}
-            [$this]
-        );
-
-        // Return the found (or default) value
-        return $default;
+        // Return first value or default if filtered collection is empty
+        return empty($filtered) ? $default : reset($filtered);
     }
 
     /**
@@ -216,15 +195,14 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      */
     public function last(callable $filter = null, array $args = [], $default = null)
     {
-        // Reverse array first
-        $this->data = array_reverse($this->data,true);
+        // Use $this if no filter provided
+        $filtered = ($filter === null)
+            ? $this
+            : $this->filter($function, $args)
+        ;
 
-        $element = $this->first($filter, $args, $default);
-
-        // Switch element back
-        $this->data = array_reverse($this->data,true);
-
-        return $element;
+        // Return last value or default if filtered collection is empty
+        return empty($filtered) ? $default : end($filtered);
     }
 
     /**
