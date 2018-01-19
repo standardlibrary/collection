@@ -182,7 +182,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
     {
         // Reverse array first
         $array = clone $this;
-        $array->flip();
+        $array->reverse();
 
         $element = $this->findFirstMatchingElement($this, $filter, $default);
 
@@ -200,6 +200,21 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
     final public function flip(): self
     {
         array_flip($this->data);
+
+        // Reset cache
+        unset($this->iterator);
+
+        return $this;
+    }
+
+    /**
+     * Reverse order of the Collection
+     *
+     * @return self
+     */
+    final public function reverse(): self
+    {
+        array_reverse($this->data);
 
         // Reset cache
         unset($this->iterator);
@@ -288,7 +303,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      */
     final public function offsetExists($offset)
     {
-        return array_key_exists($offset, $this->data);
+        return count(array_keys($this->data, $offset, true)) > 0 ? true : false;
     }
 
     /**
