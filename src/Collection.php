@@ -290,7 +290,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      */
     final public function offsetSet($offset, $value): void
     {
-        if (is_null($key)) {
+        if (is_null($offset)) {
             $this->data[] = $value;
         } else {
             $this->data[$offset] = $value;
