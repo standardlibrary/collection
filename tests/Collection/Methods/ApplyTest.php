@@ -103,7 +103,7 @@ final class ApplyTest extends TestCase
                 [1, 2, 3, 4, 5], // Start data
 
                 // Modifying function
-                function(int $value, array $args) {
+                function($value, array $args) {
                     return $value * $args['multiplier'];
                 },
 

@@ -109,7 +109,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
                     $function(
 
                         // Current value
-                        $collection->current(),
+                        $collection->getInnerIterator()->current(),
 
                         // Optional user-defined arguments
                         $args
