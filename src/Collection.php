@@ -43,6 +43,11 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
     protected $iterator;
 
     /**
+     * @var string
+     */
+    protected $checksum;
+
+    /**
      * Returns the type of the object
      *
      * @return string
@@ -201,9 +206,6 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
     {
         $this->data = array_reverse($this->data);
 
-        // Reset cache
-        unset($this->iterator);
-
         return $this;
     }
 
@@ -259,7 +261,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
      * @param mixed $offset
      * @return self
      */
-    public function delete($offset)
+    public function delete($offset): self
     {
         unset($this->data[$offset]);
 
@@ -491,11 +493,13 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
     final private function getCachedIterator(): CachingIterator
     {
         // If cache is generated, return it
-        if (isset($this->iterator)) {
+        if (isset($this->iterator) && $this->checksum === md5($this->data)) {
             return $this->iterator;
         }
 
         // Create and return new CachedIterator from the data
+        $this->$checksum = md5($this->data);
+
         return $this->iterator = new CachingIterator(
 
             // The raw data
