@@ -184,7 +184,7 @@ class Collection implements ArrayAccess, CollectionType, Countable, IteratorAggr
         $array = clone $this;
         $array->reverse();
 
-        $element = $this->findFirstMatchingElement($this, $filter, $default);
+        $element = $this->findFirstMatchingElement($array, $filter, $default);
 
         // Memory saving
         unset($array);

@@ -34,7 +34,7 @@ final class FilterTest extends TestCase
         $collection = new Collection($data);
         $collection->filter($modifier, $args);
 
-        $this->assertEquals($expected, $collection->toArray());
+        $this->assertSame($expected, $collection->toArray());
     }
 
     /**

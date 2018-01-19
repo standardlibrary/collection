@@ -41,7 +41,7 @@ final class LastTest extends TestCase
      *
      * @return void
      */
-    final public function testShouldReturnFirstElement(): void
+    final public function testShouldReturnLastElement(): void
     {
         $this->assertEquals('baz', self::$collection->last());
     }
@@ -51,7 +51,7 @@ final class LastTest extends TestCase
      *
      * @return void
      */
-    final public function testShouldReturnFirstElementWithUserDefinedFilter(): void
+    final public function testShouldReturnLastElementWithUserDefinedFilter(): void
     {
         $this->assertEquals(
             4,
