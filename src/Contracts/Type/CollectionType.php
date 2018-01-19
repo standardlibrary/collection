@@ -70,7 +70,7 @@ interface CollectionType extends Type
      * @param mixed $offset - the offset to check
      * @return bool
      */
-    public function has($offset): bool;
+    public function exists($offset): bool;
 
     /**
      * Deletes a key/pair
@@ -112,4 +112,32 @@ interface CollectionType extends Type
      * @return self
      */
     public function filter(callable $function, array $args = []);
+
+    /**
+     * Return first element matching criteria
+     *
+     * Apply the given callable to each element. The firt element that matches
+     * the criteria and returns a boolean TRUE value MUST be returned. If no
+     * callable is supplied then the method SHOULD return the first element from
+     * the array.
+     *
+     * @param callable|null $filter - user-defined function to filter elements
+     * @param mixed|null $default - OPTIONAL default value to return
+     * @return mixed
+     */
+    public function first(callable $filter = null, $default = null);
+
+    /**
+     * Return last element matching criteria
+     *
+     * Apply the given callable to each element. The last element that matches
+     * the criteria and returns a boolean TRUE value MUST be returned. If no
+     * callable is supplied then the method SHOULD return the last element from
+     * the array.
+     *
+     * @param callable|null $filter - user-defined function to filter elements
+     * @param mixed|null $default - OPTIONAL default value to return
+     * @return mixed
+     */
+    public function last(callable $filter = null, $default = null);
 }
