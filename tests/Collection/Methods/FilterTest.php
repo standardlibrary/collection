@@ -34,11 +34,8 @@ final class FilterTest extends TestCase
         $collection = new Collection($data);
         $filtered = $collection->filter($modifier, $args);
 
-        foreach ($expected as $value) {
-            $this->assertContains($value, $filtered);
-        }
-
-        $this->assertCount(4, $collection->toArray());
+        $this->assertArraySubset($expected, $filtered);
+        $this->assertCount(4, $filtered);
     }
 
     /**
